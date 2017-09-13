@@ -113,6 +113,16 @@
                 </configuration>
             </plugin>
         </plugins>
+
+	<!-- Deploying to devcase repository -->
+	<extensions>
+		<extension>
+			<groupId>org.springframework.build</groupId>
+			<artifactId>aws-maven</artifactId>
+			<version>5.0.0.RELEASE</version>
+		</extension>
+	</extensions>
+        	
     </build>
 
     <dependencies>
@@ -241,5 +251,19 @@
         </pluginRepository>
     </pluginRepositories>
 
+	<!-- Custom Devcase Distribuition Repository -->
+	<distributionManagement>
+		<repository>
+			<id>devcase-sp-repo</id>
+			<name>Devcase Repository S3 Bucket</name>
+			<url>s3://devcase-sp-repo/release</url>
+		</repository>
+		<snapshotRepository>
+			<id>devcase-sp-repo-snapshots</id>
+			<name>Devcase Repository S3 Bucket</name>
+			<url>s3://devcase-sp-repo/snapshot</url>
+		</snapshotRepository>
+	</distributionManagement>
+	
 </project>
 
