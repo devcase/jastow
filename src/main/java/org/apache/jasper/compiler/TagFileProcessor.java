@@ -515,16 +515,32 @@ class TagFileProcessor {
 
         Jar tagJar = null;
         Jar tagJarOriginal = null;
+
+        JspCompilationContext ctxt = compiler.getCompilationContext();
+        JspRuntimeContext rctxt = ctxt.getRuntimeContext();
+
         try {
         if (tagFilePath.startsWith("/META-INF/")) {
-            try {
-                String[] location = compiler.getCompilationContext().getTldLocation(tagInfo.getTagLibrary().getURI());
-                URL jarUrl = compiler.getCompilationContext().getServletContext().getResource(location[0]);
-                tagJar =  JarFactory.newInstance(new URL("jar:" + jarUrl + "!/"));
+        	
+        	// the tagfile may be at a exploded dependency, instead in a jar - let's try
+        	// to retrieve directly as a resource from the classpath
+        	
+        	if(ctxt.getClassLoader().getResource(tagFilePath.substring(1)) == null) {
+        		
+        		//didn't find in the classloader - the tagfile must be
+        		//in a jar
+            	
+                try {
+                    String[] location = compiler.getCompilationContext().getTldLocation(tagInfo.getTagLibrary().getURI());
+                    URL jarUrl = compiler.getCompilationContext().getServletContext().getResource(location[0]);
+                    tagJar =  JarFactory.newInstance(new URL("jar:" + jarUrl + "!/"));
 
-                } catch (IOException ioe) {
-                    throw new JasperException(ioe);
-            }
+                    } catch (IOException ioe) {
+                        throw new JasperException(ioe);
+                }
+        		
+        	}
+        	
         }
             String wrapperUri;
             if (tagJar == null) {
@@ -533,8 +549,6 @@ class TagFileProcessor {
                 wrapperUri = tagJar.getURL(tagFilePath);
         }
 
-        JspCompilationContext ctxt = compiler.getCompilationContext();
-        JspRuntimeContext rctxt = ctxt.getRuntimeContext();
 
         synchronized (rctxt) {
                 JspServletWrapper wrapper = null;
