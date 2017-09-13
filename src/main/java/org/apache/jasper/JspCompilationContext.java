@@ -312,7 +312,7 @@ public class JspCompilationContext {
         if (res.startsWith("/META-INF/")) {
             // This is a tag file packaged in a jar that is being compiled
             URL jarUrl = tagFileJarUrls.get(res);
-            if (jarUrl == null) {
+            if (jarUrl == null && tagJar != null) {
                 jarUrl = tagJar.getJarFileURL();
             }
             if (jarUrl != null) {

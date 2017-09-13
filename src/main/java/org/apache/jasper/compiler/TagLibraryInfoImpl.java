@@ -478,7 +478,11 @@ class TagLibraryInfoImpl extends TagLibraryInfo implements TagConstants {
             // See https://issues.apache.org/bugzilla/show_bug.cgi?id=46471
             // This needs to be removed once all the broken code that depends on
             // it has been removed
-            ctxt.setTagFileJarUrl(path, jar.getJarFileURL());
+        	
+        	if(jar != null ) {
+        		// May include tagfiles in exploded dependencies
+                ctxt.setTagFileJarUrl(path, jar.getJarFileURL());
+        	}
         } else if (!path.startsWith("/WEB-INF/tags")) {
             err.jspError(MESSAGES.invalidTagFileDirectory(path));
         }
